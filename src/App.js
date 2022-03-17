@@ -15,6 +15,19 @@ class App extends React.Component {
     }
   }
 
+  onSignoutClick() {
+    window.localStorage.removeItem("token")
+  }
+
+  onInvalidateToken() {
+    const token = window.localStorage.getItem("token")
+    console.log("token: "+ token)
+    const headers = {'Authorization': 'Token ' + token}
+    axios.post('http://127.0.0.1:8000/auth_app/signout/', {}, {headers: headers})
+    .then(response => console.log(response.data))
+    .catch(error => window.alert(error))
+  }
+
   onPublicClick() {
     console.log('clicked public')
     axios.get('http://127.0.0.1:8000/auth_app/public')
@@ -50,7 +63,8 @@ class App extends React.Component {
         <button onClick={() => this.setState({show_login_form: true})}>Open Login Form</button>
         <button onClick={this.onPublicClick.bind(this)}>Test Public</button>
         <button onClick={this.onPrivateClick.bind(this)}>Test Private</button>
-
+        <button onClick={this.onSignoutClick.bind(this)}>Signout</button>
+        <button onClick={this.onInvalidateToken.bind(this)}>Invalidate token</button>
         <LoginForm show={this.state.show_login_form} onHide={() => this.setState({show_login_form: false})}/>
       </div>
     );
